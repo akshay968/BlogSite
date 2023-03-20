@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static%}
+{% block title%}
+ Myself
+{%endblock%}
+{%block css%}
+
+{%endblock%}
+{% block body%}
+<section id="nav_bar">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'index'%}">Home <span class="sr-only">(current)</span></a>
+            </li>
+           
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'allblogs'%}">All Blogs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'read-later'%}">READ later</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+</section>
+<section id="blog">
+    <h1>{{blog.title}}</h1>
+    {%for tag in tags%}
+    <span>{{tag.tag}}</span>
+    {%endfor%}
+    <form action='{% url "read-later" %}' method='POST' >
+      {% csrf_token %}
+     <input type='hidden' value='{{ blog.id }}' name='post_id'>
+     <button >READ LATER</button>
+    </form>
+
+    <h3>{{blog.excerpt}}</h3>
+      <img src='{{blog.image.url}}'/>
+     <p>author: {{ blog.author.first_name}} {{ blog.author.last_name}}</p>
+      <div>
+        {{blog.content}}
+      </div>
+</section>
+<h1>COMMENTS</h1>
+<section id="coments">
+  {% for comment in all_comments%}
+  <div>
+  <h2>{{comment.user_name}}</h2>
+
+  <p>{{comment.comment}}</p>
+  </div>
+  {%endfor%}
+  
+</section>
+
+ <section>
+  <form action="{% url 'blog_detail' blog.slug %}" method='post'>
+
+     {% csrf_token %}
+    {% for form_field in form %}
+      <div class="form-control {% if form_field.errors %}invalid{% endif %}">
+        {{ form_field.label_tag }}
+        {{ form_field }}
+        {{ form_field.errors }}
+      </div>
+    {% endfor %}
+     <button>Save Comment</button>
+  </form>
+ </section>
+    
+ </div>
+
+</div>
+</section>
+
+{%endblock%}
